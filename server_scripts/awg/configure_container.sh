@@ -39,7 +39,12 @@ fi
 
 WG_CONF="/opt/amnezia/awg/wg0.conf"
 
-cat > $WG_CONF <<EOF
+if [[ -f "$WG_CONF" ]]; then
+    # Если файл существует
+    exit 0
+else
+    # Если файла нет
+    cat > $WG_CONF <<EOF
 [Interface]
 PrivateKey = $WIREGUARD_SERVER_PRIVATE_KEY
 Address = $AWG_SUBNET_IP/$WIREGUARD_SUBNET_CIDR
@@ -54,3 +59,5 @@ H2 = $RESPONSE_PACKET_MAGIC_HEADER
 H3 = $UNDERLOAD_PACKET_MAGIC_HEADER
 H4 = $TRANSPORT_PACKET_MAGIC_HEADER
 EOF
+fi
+

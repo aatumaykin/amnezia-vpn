@@ -2,3 +2,5 @@
 .env
 amnezia-awg/
 amnezia-dns/
+amnezia-wireguard/
+caddy/
