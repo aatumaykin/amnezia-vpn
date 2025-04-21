@@ -7,6 +7,11 @@ Docker Compose to deploy AmneziaWG services
 git clone https://github.com/aatumaykin/amnezia-vpn.git
 cd amnezia-vpn
 ./install.sh
+```
+
+Create .env and
+
+```
 docker compose up -d
 ```
 
