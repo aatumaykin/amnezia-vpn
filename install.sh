@@ -5,3 +5,5 @@ apt install -y sudo wget curl ufw git
 
 # Install Docker
 sh -c "$(curl -fsSL https://get.docker.com/)"
+
+chmod -R 775 server_scripts
