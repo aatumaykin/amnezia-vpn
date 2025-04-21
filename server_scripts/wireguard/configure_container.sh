@@ -37,32 +37,15 @@ fi
 
 WG_CONF="/opt/amnezia/wireguard/wg0.conf"
 
-cat > $WG_CONF <<EOF
+if [[ -f "$WG_CONF" ]]; then
+    # Если файл существует
+    exit 0
+else
+    # Если файла нет
+    cat > $WG_CONF <<EOF
 [Interface]
 PrivateKey = $WIREGUARD_SERVER_PRIVATE_KEY
-Address = $WIREGUARD_SUBNET_IP/$WIREGUARD_SUBNET_CIDR
-ListenPort = $WIREGUARD_SERVER_PORT
+Address = $AWG_SUBNET_IP/$WIREGUARD_SUBNET_CIDR
+ListenPort = $AWG_SERVER_PORT
 EOF
-
-CLIENTS_TABLE="clientsTable"
-
-if [[ ! -f "$CLIENTS_TABLE" ]]; then
-    echo "Файл $CLIENTS_TABLE не найден."
-    exit 0
 fi
-
-if ! command -v jq &> /dev/null; then
-    echo "Утилита jq не установлена. Установите её с помощью 'sudo apt install jq' или аналогичной команды."
-    exit 0
-fi
-
-# Читаем JSON и генерируем секции [Peer]
-NEW_PEERS=$(jq -r '
-    .[] |
-    "[Peer]\nPublicKey = \(.clientId)\nPresharedKey = '$WIREGUARD_PSK'\nAllowedIPs = \(.userData.allowedIps)\n"
-' "$CLIENTS_TABLE")
-
-# Добавляем новые секции [Peer] в конец файла wg0.conf
-echo "$NEW_PEERS" >> "$WG_CONF"
-
-echo "Секции [Peer] успешно добавлены в $WG_CONF."
