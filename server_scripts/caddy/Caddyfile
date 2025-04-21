@@ -1,0 +1,25 @@
+{env.DOMAIN} {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+    }
+
+    vars {
+        # Generate a secure token with: openssl rand -hex 32
+        dns_query_token {env.DNS_QUERY_TOKEN}
+    }
+
+    # DNS-over-HTTPS format: example.org/your_token/dns-query/[optional_device_id]
+    # Example: https://{env.DOMAIN}/{env.DNS_QUERY_TOKEN}/dns-query/my-iphone
+    @auth_token path /{http.vars.dns_query_token}*
+
+    handle @auth_token {
+        uri strip_prefix /{http.vars.auth_token}
+        reverse_proxy https://amnezia-dns:443 {
+            transport http {
+                tls_insecure_skip_verify
+            }
+            header_up Host {upstream_hostport}
+            header_up X-Real-IP {http.request.remote.host}
+        }
+    }
+}
