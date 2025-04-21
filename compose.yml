@@ -107,7 +107,7 @@ services:
       - "853:853"  # Порт для DoT
       - "853:853/udp"  # Порт для DoT
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./server_scripts/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./caddy/data:/data
       - ./caddy/config:/config
     extra_hosts:
