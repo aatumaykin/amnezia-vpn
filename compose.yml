@@ -80,7 +80,8 @@ services:
       - PGID=1000
       - TZ=${TZ:-Europe/Berlin}
     volumes:
-      - "./amnezia-dns/:/opt/adguardhome"
+      - "./amnezia-dns/work:/opt/adguardhome/work"
+      - "./amnezia-dns/conf:/opt/adguardhome/conf"
       - "./caddy/data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/${DOMAIN}:/certs:ro"
     networks:
       dns-net:
