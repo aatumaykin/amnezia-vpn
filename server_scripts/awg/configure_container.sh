@@ -70,7 +70,7 @@ fi
 # Читаем JSON и генерируем секции [Peer]
 NEW_PEERS=$(jq -r '
     .[] | 
-    "[Peer] ## \(.userData.clientName)\nPublicKey = \(.clientId)\nPresharedKey = '$AWG_PSK'\nAllowedIPs = \(.userData.allowedIps)\n"
+    "[Peer] ## \(.userData.clientName)\nPublicKey = \(.clientId)\nPresharedKey = '$AWG_PSK'\nAllowedIPs = 0.0.0.0/0\nEndpoint = '$SERVER_IP_ADDRESS':'$AWG_SERVER_PORT'\nPersistentKeepalive = 25\n"
 ' "$CLIENTS_TABLE")
 
 # Добавляем новые секции [Peer] в конец файла wg0.conf
