@@ -54,26 +54,3 @@ H2 = $RESPONSE_PACKET_MAGIC_HEADER
 H3 = $UNDERLOAD_PACKET_MAGIC_HEADER
 H4 = $TRANSPORT_PACKET_MAGIC_HEADER
 EOF
-
-CLIENTS_TABLE="clientsTable"
-
-if [[ ! -f "$CLIENTS_TABLE" ]]; then
-    echo "Файл $CLIENTS_TABLE не найден."
-    exit 0
-fi
-
-if ! command -v jq &> /dev/null; then
-    echo "Утилита jq не установлена. Установите её с помощью 'sudo apt install jq' или аналогичной команды."
-    exit 0
-fi
-
-# Читаем JSON и генерируем секции [Peer]
-NEW_PEERS=$(jq -r '
-    .[] | 
-    "[Peer] ## \(.userData.clientName)\nPublicKey = \(.clientId)\nPresharedKey = '$WIREGUARD_PSK'\nAllowedIPs = 0.0.0.0/0\nEndpoint = '$SERVER_IP_ADDRESS':'$AWG_SERVER_PORT'\nPersistentKeepalive = 25\n"
-' "$CLIENTS_TABLE")
-
-# Добавляем новые секции [Peer] в конец файла wg0.conf
-echo "$NEW_PEERS" >> "$WG_CONF"
-
-echo "Секции [Peer] успешно добавлены в $WG_CONF."
